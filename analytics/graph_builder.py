@@ -39,39 +39,39 @@ def build_graph(transactions):
     return G
 
 def trace_fund_flow(G, start_address, max_hops=5):
-    print(f"\nTracing fund flow starting from: {start_address}\n")
-
+    """Returns a list of hop dicts instead of printing."""
+    start_address = start_address.lower()
+    results = []
     visited = set()
-    queue = [(start_address, [start_address], 0)]
+    queue = [(start_address, 0)]
 
     while queue:
-        current, path, hops = queue.pop(0)
+        current, hops = queue.pop(0)
 
-        if hops >= max_hops:
-            continue
-
-        if current not in G:
+        if hops >= max_hops or current not in G:
             continue
 
         for neighbor in G.successors(current):
             edge_data = G.get_edge_data(current, neighbor)
-            new_path = path + [neighbor]
 
-            print(f"Hop {hops+1}: {current} --({edge_data['value']} {edge_data['token']})--> {neighbor}")
+            results.append({
+                "hop": hops + 1,
+                "from": current,
+                "to": neighbor,
+                "value": edge_data["value"],
+                "token": edge_data["token"],
+                "tx_hash": edge_data["tx_hash"],
+                "timestamp": edge_data["timestamp"],
+            })
 
             if neighbor not in visited:
                 visited.add(neighbor)
-                queue.append((neighbor, new_path, hops + 1))
+                queue.append((neighbor, hops + 1))
 
-if __name__ == "__main__":
-    print("Fetching transactions from database...")
-    transactions = fetch_transactions()
-    print(f"Fetched {len(transactions)} transactions.\n")
+    return results
 
-    print("Building graph...")
-    G = build_graph(transactions)
-    print(f"Graph built: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges.")
-
-    # Change this to any wallet address that exists in your data
-    start_wallet = "0x28c6c06298d514db089934071355e5743bf21d60"
-    trace_fund_flow(G, start_wallet)
+def get_graph_stats(G):
+    return {
+        "nodes": G.number_of_nodes(),
+        "edges": G.number_of_edges(),
+    }
