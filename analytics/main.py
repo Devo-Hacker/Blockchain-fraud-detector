@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from graph_builder import fetch_transactions, build_graph, trace_fund_flow, get_graph_stats
+from risk_scoring import compute_risk
 
 app = FastAPI()
 
@@ -30,4 +31,23 @@ def trace_wallet(address: str, max_hops: int = 5):
         "address": address.lower(),
         "graph_stats": stats,
         "hops": hops,
+    }
+
+@app.get("/investigate/{address}")
+def investigate_wallet(address: str, max_hops: int = 5):
+    transactions = fetch_transactions()
+
+    if not transactions:
+        raise HTTPException(status_code=404, detail="No transactions found in database")
+
+    G = build_graph(transactions)
+    stats = get_graph_stats(G)
+    hops = trace_fund_flow(G, address, max_hops=max_hops)
+    risk = compute_risk(hops)
+
+    return {
+        "address": address.lower(),
+        "graph_stats": stats,
+        "hops": hops,
+        "risk": risk,
     }
