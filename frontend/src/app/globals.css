@@ -1,4 +1,14 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: radial-gradient(1200px 800px at 85% -10%, #F3EEFF 0%, #EFEDF9 45%), #EFEDF9;
+  color: #2B2745;
+}
+
 
 :root {
   --background: #ffffff;

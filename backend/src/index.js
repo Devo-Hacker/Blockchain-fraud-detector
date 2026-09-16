@@ -4,12 +4,15 @@ import dotenv from "dotenv";
 import pool from "./db/pool.js";
 import walletRoutes from "./routes/wallet.js";
 import traceRoutes from "./routes/trace.js";
+import reportsRoutes from "./routes/reports.js";
 
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/trace", traceRoutes);
+app.use("/reports", reportsRoutes);
+
 
 app.get("/", (req, res) => {
   res.json({ status: "backend is alive" });
