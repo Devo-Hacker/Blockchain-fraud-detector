@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from graph_builder import fetch_transactions, build_graph, trace_fund_flow, get_graph_stats
 from risk_scoring import compute_risk
+from ai_narrative import generate_case_narrative
 
 app = FastAPI()
 
@@ -45,9 +46,11 @@ def investigate_wallet(address: str, max_hops: int = 5):
     hops = trace_fund_flow(G, address, max_hops=max_hops)
     risk = compute_risk(hops)
 
-    return {
+    investigation = {
         "address": address.lower(),
         "graph_stats": stats,
         "hops": hops,
         "risk": risk,
     }
+    investigation["narrative"] = generate_case_narrative(investigation)
+    return investigation

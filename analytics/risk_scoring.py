@@ -139,7 +139,11 @@ def compute_risk(hops):
         "max_hop": max_hop,
         "factors": factors,
         "wallets_flagged": {
-            "scam": scam_wallets,
-            "exchange": exchange_wallets,
+            "scam": [
+                {"address": a, "label": entities[a]["label"]} for a in scam_wallets
+            ],
+            "exchange": [
+                {"address": a, "label": entities[a]["label"]} for a in exchange_wallets
+            ],
         },
     }

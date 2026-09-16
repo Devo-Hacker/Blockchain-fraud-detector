@@ -7,6 +7,11 @@ export interface RiskFactor {
   evidence: string[];
 }
 
+export interface WalletFlag {
+  address: string;
+  label: string | null;
+}
+
 export interface Hop {
   hop: number;
   from: string;
@@ -25,8 +30,9 @@ export interface Investigation {
     score: number;
     max_hop: number;
     factors: RiskFactor[];
-    wallets_flagged: { scam: string[]; exchange: string[] };
+    wallets_flagged: { scam: WalletFlag[]; exchange: WalletFlag[] };
   };
+  narrative?: string | null;
 }
 
 export interface Case {

@@ -13,6 +13,7 @@ router.post("/", async (req, res) => {
   }
 
   const address = reported_wallet.toLowerCase();
+  const PORT = process.env.PORT || 5000;
 
   try {
     // 1. Create a case
@@ -30,18 +31,44 @@ router.post("/", async (req, res) => {
     );
     const reportId = reportResult.rows[0].id;
 
-    // 3. Make sure the wallet's transaction data is fetched first
-    // (calling our own Node route internally, reusing existing logic)
-    await fetch(`http://localhost:${process.env.PORT || 5000}/wallet/${address}/fetch`);
+    // 3. Fetch the reported wallet's own transaction history
+    await fetch(`http://localhost:${PORT}/wallet/${address}/fetch`);
 
-    // 4. Run the investigation via the Python analytics service
-    const investigateResponse = await fetch(`${ANALYTICS_URL}/investigate/${address}`);
+    // 4. Iteratively trace + expand: after each trace, fetch history for
+    //    newly-discovered counterparty wallets, then re-trace with richer data.
+    //    Bounded so we don't blow through Ankr's free-tier rate limit.
+    const MAX_EXPAND_ROUNDS = 2;
+    const MAX_WALLETS_PER_ROUND = 5;
+    const fetchedWallets = new Set([address]);
     let investigation = null;
 
-    if (investigateResponse.ok) {
+    for (let round = 0; round <= MAX_EXPAND_ROUNDS; round++) {
+      const investigateResponse = await fetch(`${ANALYTICS_URL}/investigate/${address}`);
+      if (!investigateResponse.ok) break;
       investigation = await investigateResponse.json();
 
-      // 5. Save the investigation result
+      if (round === MAX_EXPAND_ROUNDS) break;
+
+      const newWallets = [
+        ...new Set((investigation.hops || []).map((h) => h.to.toLowerCase())),
+      ]
+        .filter((w) => !fetchedWallets.has(w))
+        .slice(0, MAX_WALLETS_PER_ROUND);
+
+      if (newWallets.length === 0) break; // trace has hit dead ends, nothing left to expand
+
+      for (const w of newWallets) {
+        fetchedWallets.add(w);
+        try {
+          await fetch(`http://localhost:${PORT}/wallet/${w}/fetch`);
+        } catch (e) {
+          console.error("Failed to fetch wallet", w, e.message);
+        }
+      }
+    }
+
+    // 5. Save the final investigation result
+    if (investigation) {
       await pool.query(
         `INSERT INTO investigations (case_id, status, risk_score, findings)
          VALUES ($1, 'completed', $2, $3)`,
