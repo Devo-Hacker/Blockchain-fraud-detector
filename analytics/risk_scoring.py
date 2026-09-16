@@ -37,10 +37,15 @@ def compute_risk(hops):
     hops: list of dicts from trace_fund_flow(), e.g.
       {"hop": 1, "from": "0x..", "to": "0x..", "value": 1.2, "tx_hash": "..", "timestamp": ".."}
 
-    Returns {"score": int, "factors": [...], "max_hop": int}
+    Returns {"score": int, "factors": [...], "max_hop": int, "wallets_flagged": {...}}
     """
     if not hops:
-        return {"score": 0, "factors": [], "max_hop": 0}
+        return {
+            "score": 0,
+            "factors": [],
+            "max_hop": 0,
+            "wallets_flagged": {"scam": [], "exchange": []},
+        }
 
     factors = []
     score = 0

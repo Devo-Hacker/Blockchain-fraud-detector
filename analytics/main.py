@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from graph_builder import fetch_transactions, build_graph, trace_fund_flow, get_graph_stats
 from risk_scoring import compute_risk
 from ai_narrative import generate_case_narrative
+from trace_summary import build_trace_summary
 
 app = FastAPI()
 
@@ -52,5 +53,6 @@ def investigate_wallet(address: str, max_hops: int = 5):
         "hops": hops,
         "risk": risk,
     }
+    investigation["summary"] = build_trace_summary(hops, risk, address)
     investigation["narrative"] = generate_case_narrative(investigation)
     return investigation

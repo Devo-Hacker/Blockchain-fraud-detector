@@ -22,6 +22,23 @@ export interface Hop {
   timestamp: string;
 }
 
+export interface TraceEndpoint {
+  address: string;
+  label: string | null;
+  entity_type: string;
+}
+
+export interface TraceSummaryData {
+  root: string;
+  hops_traced: number;
+  wallets_touched: number;
+  transactions_traced: number;
+  outflow_from_root: number;
+  outflow_token: string;
+  endpoints: TraceEndpoint[];
+  headline: string;
+}
+
 export interface Investigation {
   address: string;
   graph_stats: { nodes: number; edges: number };
@@ -32,6 +49,7 @@ export interface Investigation {
     factors: RiskFactor[];
     wallets_flagged: { scam: WalletFlag[]; exchange: WalletFlag[] };
   };
+  summary?: TraceSummaryData | null;
   narrative?: string | null;
 }
 
@@ -54,6 +72,16 @@ export interface VictimReport {
   amount_lost: number | null;
   reported_wallet: string;
   created_at: string;
+}
+
+// Older saved investigations (from before wallets_flagged returned
+// {address, label} objects) stored scam/exchange as plain address
+// strings. This normalizes either shape so old cases don't crash the UI.
+export function normalizeWalletFlags(flags: unknown): WalletFlag[] {
+  if (!Array.isArray(flags)) return [];
+  return flags.map((w) =>
+    typeof w === "string" ? { address: w, label: null } : (w as WalletFlag)
+  );
 }
 
 export async function submitReport(body: {

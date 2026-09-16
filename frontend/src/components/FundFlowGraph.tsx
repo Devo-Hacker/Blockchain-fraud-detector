@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Investigation } from "@/lib/api";
+import { Investigation, normalizeWalletFlags } from "@/lib/api";
 
 export default function FundFlowGraph({ investigation }: { investigation: Investigation }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -15,8 +15,12 @@ export default function FundFlowGraph({ investigation }: { investigation: Invest
       const vis = await import("vis-network/standalone");
 
       const root = investigation.address.toLowerCase();
-      const scamSet = new Set(investigation.risk.wallets_flagged.scam.map((a) => a.toLowerCase()));
-      const exchangeSet = new Set(investigation.risk.wallets_flagged.exchange.map((a) => a.toLowerCase()));
+      const scamSet = new Set(
+        normalizeWalletFlags(investigation.risk.wallets_flagged.scam).map((a) => a.address.toLowerCase())
+      );
+      const exchangeSet = new Set(
+        normalizeWalletFlags(investigation.risk.wallets_flagged.exchange).map((a) => a.address.toLowerCase())
+      );
 
       if (investigation.hops.length === 0 || cancelled) return;
 
@@ -58,7 +62,7 @@ export default function FundFlowGraph({ investigation }: { investigation: Invest
           color: { color: "#C3BCEA", highlight: "#6C5CE7" },
           label: h.value > 0 ? `${h.value} ${h.token}` : "",
           font: { size: 9, color: "#9994B0", face: "JetBrains Mono", strokeWidth: 0, background: "rgba(255,255,255,0.8)" },
-                    smooth: { enabled: true, type: "continuous", roundness: 0.5 },
+          smooth: { enabled: true, type: "continuous", roundness: 0.5 },
           width: 1.5,
         }))
       );
