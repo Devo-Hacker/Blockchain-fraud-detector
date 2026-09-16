@@ -58,7 +58,7 @@ export default function FundFlowGraph({ investigation }: { investigation: Invest
           color: { color: "#C3BCEA", highlight: "#6C5CE7" },
           label: h.value > 0 ? `${h.value} ${h.token}` : "",
           font: { size: 9, color: "#9994B0", face: "JetBrains Mono", strokeWidth: 0, background: "rgba(255,255,255,0.8)" },
-          smooth: { type: "continuous" },
+                    smooth: { enabled: true, type: "continuous", roundness: 0.5 },
           width: 1.5,
         }))
       );

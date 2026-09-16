@@ -2,11 +2,12 @@ import { getCaseDetail } from "@/lib/api";
 import InvestigationPanel from "@/components/InvestigationPanel";
 import Link from "next/link";
 
-export default async function CaseDetail({ params }: { params: { id: string } }) {
+export default async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   let data;
   let loadError = "";
   try {
-    data = await getCaseDetail(parseInt(params.id));
+    data = await getCaseDetail(parseInt(id));
   } catch (e: any) {
     loadError = e.message;
   }

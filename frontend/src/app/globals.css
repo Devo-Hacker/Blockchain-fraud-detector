@@ -1,25 +1,35 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-body {
-  background: radial-gradient(1200px 800px at 85% -10%, #F3EEFF 0%, #EFEDF9 45%), #EFEDF9;
-  color: #2B2745;
+@theme {
+  --color-bg: #EFEDF9;
+  --color-bgAlt: #E6E2F7;
+  --color-surface: #FFFFFF;
+  --color-surfaceTint: #F7F5FD;
+  --color-ink: #2B2745;
+  --color-inkSoft: #6B6584;
+  --color-inkFaint: #9994B0;
+  --color-violet: #6C5CE7;
+  --color-violetDeep: #5443D6;
+  --color-violetPale: #E3DFFB;
+  --color-mint: #2FBF8F;
+  --color-mintPale: #DDF5EB;
+  --color-amber: #E0A430;
+  --color-amberPale: #FBEED2;
+  --color-coral: #E5595B;
+  --color-coralPale: #FBDEDE;
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --shadow-clay: 0 14px 34px rgba(87,76,176,0.10), 0 2px 8px rgba(43,39,69,0.05);
+
+  --radius-lg2: 26px;
+  --radius-md2: 18px;
 }
-
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,7 +40,7 @@ body {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: radial-gradient(1200px 800px at 85% -10%, #F3EEFF 0%, #EFEDF9 45%), #EFEDF9;
+  color: #2B2745;
   font-family: Arial, Helvetica, sans-serif;
 }
