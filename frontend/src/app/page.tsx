@@ -1,416 +1,401 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getCasesWithRisk, Case } from "@/lib/api";
 import {
   ShieldAlert,
-  ArrowRight,
-  ArrowUpRight,
-  ChevronDown,
-  ChevronUp,
+  Network,
   Search,
-  Activity,
-  Lock,
+  Landmark,
+  Users,
+  ArrowRight,
+  ChevronRight,
   Zap,
-  TrendingUp,
-  Terminal,
+  Link2,
+  AlertTriangle,
+  Globe,
+  MessageCircle,
+  Mail,
+  FileSearch,
+  GitBranch,
+  Gauge,
 } from "lucide-react";
 
-export default function CombinedMainPage() {
-  // Case Data State
-  const [cases, setCases] = useState<Case[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showAllCases, setShowAllCases] = useState(false);
-
-  // Accordion State
-  const [activeAccordion, setActiveAccordion] = useState<number | null>(0);
+/* ---------------------------------------------------------
+   Floating pill nav — fixed, centered, not full-width.
+--------------------------------------------------------- */
+function FloatingNav() {
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    getCasesWithRisk()
-      .then((data) => setCases(data))
-      .catch(() => setCases([]))
-      .finally(() => setLoading(false));
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const displayedCases = showAllCases ? cases : cases.slice(0, 4);
+  return (
+    <div className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4">
+      <nav
+        className={`flex items-center gap-8 rounded-full border-2 border-black bg-[#F5F4EF]/90 backdrop-blur-md px-6 py-3 transition-shadow duration-300 ${
+          scrolled ? "shadow-[6px_6px_0_0_#000]" : "shadow-[3px_3px_0_0_#000]"
+        }`}
+      >
+        <div className="flex items-center gap-2 pr-2 border-r-2 border-black/10">
+          <div className="w-7 h-7 rounded-full bg-black flex items-center justify-center">
+            <span className="text-[#D7FF3D] font-display font-bold text-xs">Dt</span>
+          </div>
+          <span className="font-display font-bold text-[15px] tracking-tight">DhanTrace</span>
+        </div>
 
-  const toggleAccordion = (index: number) => {
-    setActiveAccordion(activeAccordion === index ? null : index);
-  };
+        <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-black/70">
+          <a href="#how-it-works" className="hover:text-black transition-colors">How it works</a>
+          <a href="#research" className="hover:text-black transition-colors">Research</a>
+          <a href="#features" className="hover:text-black transition-colors">Features</a>
+        </div>
+
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-1.5 bg-[#D7FF3D] border-2 border-black rounded-full px-4 py-1.5 text-sm font-bold hover:bg-[#c4ea2c] transition-colors"
+        >
+          Get Started <ArrowRight size={14} strokeWidth={2.5} />
+        </Link>
+      </nav>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   Hero
+--------------------------------------------------------- */
+function Hero() {
+  return (
+    <section className="relative bg-[#F5F4EF] pt-44 pb-28 px-6 overflow-hidden">
+      {/* decorative network lines */}
+      <svg className="absolute top-24 right-0 w-[520px] h-[420px] opacity-[0.35] pointer-events-none hidden lg:block" viewBox="0 0 520 420" fill="none">
+        <circle cx="420" cy="60" r="5" fill="#D7FF3D" stroke="#000" strokeWidth="2" />
+        <circle cx="300" cy="150" r="4" fill="#000" />
+        <circle cx="460" cy="220" r="6" fill="#000" />
+        <circle cx="360" cy="320" r="4" fill="#D7FF3D" stroke="#000" strokeWidth="2" />
+        <circle cx="200" cy="260" r="4" fill="#000" />
+        <path d="M420 60 L300 150 L460 220 L360 320 M300 150 L200 260" stroke="#000" strokeWidth="1.5" />
+      </svg>
+
+      <div className="max-w-4xl mx-auto text-center relative z-10">
+        <div className="inline-flex items-center gap-2 bg-white border-2 border-black rounded-full px-3.5 py-1.5 text-xs font-bold mb-8 shadow-[2px_2px_0_0_#000]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#D7FF3D] border border-black" />
+          Built for Smart India Hackathon 2026
+        </div>
+
+        <h1 className="font-display font-bold text-[42px] sm:text-[56px] md:text-[68px] leading-[1.05] tracking-tight mb-6">
+          Every crypto scam
+          <br />
+          leaves a <span className="bg-[#D7FF3D] px-2 border-2 border-black inline-block -rotate-1">public trail.</span>
+          <br />
+          We follow it.
+        </h1>
+
+        <p className="text-lg text-black/65 max-w-xl mx-auto mb-10 leading-relaxed">
+          DhanTrace turns a single victim-reported wallet address into a fully traced,
+          risk-scored investigation — automatically, in seconds, on BNB Smart Chain.
+        </p>
+
+        <div className="flex items-center justify-center gap-4 flex-wrap">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 bg-black text-white rounded-full pl-2 pr-5 py-2 font-bold text-sm border-2 border-black shadow-[3px_3px_0_0_#D7FF3D] hover:shadow-[5px_5px_0_0_#D7FF3D] hover:-translate-y-0.5 transition-all"
+          >
+            <span className="w-7 h-7 rounded-full bg-[#D7FF3D] flex items-center justify-center">
+              <ArrowRight size={14} strokeWidth={2.5} className="text-black" />
+            </span>
+            Get Started
+          </Link>
+          <a
+            href="#how-it-works"
+            className="text-sm font-bold text-black/70 border-b-2 border-black/20 hover:border-black hover:text-black transition-colors pb-0.5"
+          >
+            See how it works
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------
+   Research / problem section — real, sourced stats
+--------------------------------------------------------- */
+function ResearchSection() {
+  return (
+    <section id="research" className="bg-[#0B0C0F] text-white px-6 py-28">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center gap-2 mb-6">
+          <AlertTriangle size={16} className="text-[#D7FF3D]" />
+          <span className="text-xs font-bold uppercase tracking-widest text-[#D7FF3D]">
+            The problem, in numbers
+          </span>
+        </div>
+
+        <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-[44px] leading-tight mb-6 max-w-3xl">
+          India&apos;s cyber fraud problem is accelerating faster than the system built to catch it.
+        </h2>
+
+        <p className="text-white/55 max-w-2xl mb-16 leading-relaxed">
+          These figures are drawn from Ministry of Home Affairs data and I4C reporting, as covered
+          by The Print and MoneyLife (Dec 2025–Feb 2026) — not internal estimates.
+        </p>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-2xl overflow-hidden mb-16">
+          {[
+            { value: "₹22,495 Cr", label: "Lost to cyber fraud in India in 2025 alone" },
+            { value: "75%+", label: "Of those losses came from investment scams — the category crypto fraud falls under" },
+            { value: "2.81M", label: "Complaints reported in 2025, up 24% from 2024" },
+            { value: "55,484", label: "Of those complaints actually became a registered FIR" },
+          ].map((s, i) => (
+            <div key={i} className="bg-[#0B0C0F] p-7">
+              <div className="font-display font-bold text-3xl sm:text-4xl text-[#D7FF3D] mb-2">{s.value}</div>
+              <div className="text-sm text-white/60 leading-snug">{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-white/5 border-2 border-[#D7FF3D]/30 rounded-2xl p-7 flex items-start gap-4">
+          <div className="w-9 h-9 rounded-full bg-[#D7FF3D] flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Link2 size={16} className="text-black" strokeWidth={2.5} />
+          </div>
+          <p className="text-white/80 leading-relaxed">
+            <strong className="text-white">The gap between 2.81M complaints and 55,484 FIRs</strong> is largely
+            jurisdictional — cases filed in different cities rarely get cross-checked against each other, even
+            when they trace back to the same wallet cluster. That&apos;s the specific gap DhanTrace is built to close.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------
+   How it works
+--------------------------------------------------------- */
+function HowItWorks() {
+  const steps = [
+    { icon: FileSearch, title: "Victim reports a wallet", desc: "One address — the wallet the victim sent funds to. That's the only input needed to start." },
+    { icon: Network, title: "We fetch the real chain data", desc: "Live BNB Smart Chain transaction history is pulled and a directed fund-flow graph is built automatically." },
+    { icon: GitBranch, title: "The trail is followed, hop by hop", desc: "Multi-hop tracing follows the money through intermediary wallets, splitting, and consolidation." },
+    { icon: Gauge, title: "A risk score, with reasons", desc: "Every signal — known scam links, exchange exposure, rapid movement — is scored and explained, not hidden." },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#06080D] text-slate-100 flex flex-col font-sans selection:bg-lime-400 selection:text-black">
-      {/* MAIN CONTAINER */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 pt-6 pb-16 space-y-12">
-        {/* DASHBOARD RISK HUB HERO */}
-        <section className="relative overflow-hidden rounded-2xl bg-[#0E131F] border-2 border-slate-800 p-8 md:p-10 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]">
-          <div className="relative z-10 max-w-2xl">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-lime-400/10 text-lime-400 border border-lime-400/30 mb-4 uppercase">
-              <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse" />
-              System Live // Analytical Engine Active
-            </span>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white mb-3">
-              Risk &amp; Compliance Hub
-            </h1>
-            <p className="text-slate-400 text-sm md:text-base leading-relaxed mb-6">
-              Monitor real-time threat intelligence, review reported illicit wallet clusters, and process forensic complaints.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/report/new"
-                className="px-5 py-2.5 rounded-xl bg-lime-400 text-black font-extrabold text-xs uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_0px_#000] hover:bg-lime-300 transition-all flex items-center gap-2"
-              >
-                New Investigation <ArrowUpRight size={16} />
-              </Link>
-              <Link
-                href="/wallets"
-                className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold text-xs uppercase tracking-wider border-2 border-slate-700 transition-all flex items-center gap-2"
-              >
-                <Search size={16} /> Wallet Scanner
-              </Link>
-            </div>
-          </div>
-        </section>
+    <section id="how-it-works" className="bg-[#F5F4EF] px-6 py-28">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center gap-2 mb-4">
+          <Zap size={16} />
+          <span className="text-xs font-bold uppercase tracking-widest">How it works</span>
+        </div>
+        <h2 className="font-display font-bold text-3xl sm:text-[40px] leading-tight mb-16 max-w-2xl">
+          From complaint to case file, without the manual legwork.
+        </h2>
 
-        {/* RECENT ACTIVE CASES REGISTRY */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-black text-white uppercase tracking-tight">Recent Active Cases</h2>
-              <p className="text-xs text-slate-400 mt-0.5">Flagged transactions requiring officer review</p>
-            </div>
-            <span className="text-xs font-mono px-3 py-1.5 rounded-lg bg-[#0E131F] border-2 border-slate-800 text-lime-400 font-bold">
-              TOTAL CASES: {cases.length}
-            </span>
-          </div>
-
-          <div className="bg-[#0E131F] border-2 border-slate-800 rounded-2xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,0.4)]">
-            {loading ? (
-              <div className="p-8 text-center text-slate-400 text-sm font-mono">Loading investigation records...</div>
-            ) : cases.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 text-sm">No active forensic cases logged.</div>
-            ) : (
-              <>
-                <div className="divide-y divide-slate-800">
-                  {displayedCases.map((c) => (
-                    <Link
-                      key={c.id}
-                      href={`/cases/${c.id}`}
-                      className="flex items-center justify-between p-4 md:px-6 hover:bg-slate-900/80 transition-colors group"
-                    >
-                      <div className="flex items-center gap-4 min-w-0">
-                        <div className="w-10 h-10 rounded-xl bg-slate-900 border-2 border-slate-700 flex items-center justify-center text-lime-400 shrink-0 group-hover:border-lime-400 transition-colors">
-                          <ShieldAlert size={18} />
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="text-sm font-bold text-white truncate group-hover:text-lime-400 transition-colors">
-                            {c.title}
-                          </h3>
-                          <p className="text-xs text-slate-400 mt-0.5 font-mono">
-                            LOGGED: {new Date(c.created_at).toLocaleDateString()} · REPORTS: {c.report_count}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-4 shrink-0">
-                        {c.risk_score !== null && c.risk_score !== undefined && (
-                          <span
-                            className={`text-xs font-mono font-bold px-2.5 py-1 rounded-lg border ${
-                              c.risk_score >= 60
-                                ? "bg-rose-500/10 text-rose-400 border-rose-500/30"
-                                : c.risk_score >= 30
-                                ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
-                                : "bg-lime-400/10 text-lime-400 border-lime-400/30"
-                            }`}
-                          >
-                            RISK: {c.risk_score}
-                          </span>
-                        )}
-                        <span className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider px-2.5 py-1 bg-slate-900 rounded-lg border border-slate-700">
-                          {c.status}
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
+        <div className="grid md:grid-cols-4 gap-5">
+          {steps.map((s, i) => (
+            <div key={i} className="relative">
+              <div className="bg-white border-2 border-black rounded-2xl p-6 h-full shadow-[3px_3px_0_0_#000]">
+                <div className="w-11 h-11 rounded-xl bg-black flex items-center justify-center mb-5">
+                  <s.icon size={20} className="text-[#D7FF3D]" strokeWidth={2} />
                 </div>
+                <div className="text-xs font-bold text-black/40 mb-1.5">STEP {i + 1}</div>
+                <h3 className="font-display font-bold text-lg mb-2.5 leading-snug">{s.title}</h3>
+                <p className="text-sm text-black/60 leading-relaxed">{s.desc}</p>
+              </div>
+              {i < steps.length - 1 && (
+                <ChevronRight size={20} className="hidden md:block absolute top-1/2 -right-6 -translate-y-1/2 text-black/25" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
-                {cases.length > 4 && (
-                  <div className="p-3 bg-black/40 border-t-2 border-slate-800 text-center">
-                    <button
-                      onClick={() => setShowAllCases(!showAllCases)}
-                      className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase text-lime-400 hover:text-lime-300 transition-colors py-1 px-3 rounded-lg hover:bg-slate-900"
-                    >
-                      {showAllCases ? (
-                        <>
-                          Show Less <ChevronUp size={14} />
-                        </>
-                      ) : (
-                        <>
-                          See More ({cases.length - 4} remaining) <ChevronDown size={14} />
-                        </>
-                      )}
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </section>
+/* ---------------------------------------------------------
+   Feature toggle cards — click OR hover to activate,
+   background transitions smoothly (the Elliptic pattern).
+--------------------------------------------------------- */
+function FeatureToggles() {
+  const features = [
+    {
+      icon: Network,
+      title: "Automated fund tracing",
+      desc: "Multi-hop tracing across the fund-flow graph runs in seconds instead of hours of manual block-explorer clicking.",
+    },
+    {
+      icon: ShieldAlert,
+      title: "Explainable risk scoring",
+      desc: "Every point in the score is attributed to a named signal — known scam links, exchange exposure, layering — never a black box.",
+    },
+    {
+      icon: Landmark,
+      title: "Entity intelligence",
+      desc: "Wallets are checked against known scam, mixer, bridge, and exchange address sets, sourced from real on-chain intelligence.",
+    },
+    {
+      icon: Users,
+      title: "Cross-case correlation",
+      desc: "Separate victim complaints that trace to the same wallet cluster get flagged as connected — even across different police stations.",
+    },
+  ];
 
-        {/* LANDING & FEATURE CARDS SECTION */}
-        <section className="space-y-6 pt-6 border-t-2 border-slate-800/80">
+  const [active, setActive] = useState(0);
+
+  return (
+    <section id="features" className="bg-[#F5F4EF] px-6 pb-28">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center gap-2 mb-4">
+          <Search size={16} />
+          <span className="text-xs font-bold uppercase tracking-widest">What it does</span>
+        </div>
+        <h2 className="font-display font-bold text-3xl sm:text-[40px] leading-tight mb-16 max-w-2xl">
+          Four things a human investigator would otherwise do by hand.
+        </h2>
+
+        <div className="grid md:grid-cols-4 gap-4">
+          {features.map((f, i) => {
+            const isActive = active === i;
+            return (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                onMouseEnter={() => setActive(i)}
+                className={`text-left rounded-2xl border-2 border-black p-6 min-h-[260px] flex flex-col transition-colors duration-300 ${
+                  isActive ? "bg-black text-white" : "bg-white text-black hover:bg-white/70"
+                }`}
+              >
+                <div
+                  className={`w-11 h-11 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 ${
+                    isActive ? "bg-[#D7FF3D]" : "bg-black"
+                  }`}
+                >
+                  <f.icon size={20} className={isActive ? "text-black" : "text-[#D7FF3D]"} strokeWidth={2} />
+                </div>
+                <h3 className="font-display font-bold text-lg mb-3 leading-snug">{f.title}</h3>
+                <p className={`text-sm leading-relaxed transition-colors duration-300 ${isActive ? "text-white/70" : "text-black/55"}`}>
+                  {f.desc}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------
+   CTA banner
+--------------------------------------------------------- */
+function CTABanner() {
+  return (
+    <section className="px-6 pb-28">
+      <div className="max-w-5xl mx-auto bg-[#D7FF3D] border-2 border-black rounded-[32px] p-12 sm:p-16 text-center relative overflow-hidden">
+        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full border-2 border-black/10" />
+        <div className="absolute -bottom-16 -left-16 w-52 h-52 rounded-full border-2 border-black/10" />
+        <h2 className="font-display font-bold text-3xl sm:text-[42px] leading-tight mb-5 relative z-10">
+          Ready to trace a wallet?
+        </h2>
+        <p className="text-black/70 mb-9 max-w-md mx-auto relative z-10">
+          File a complaint or run a quick scan — the investigation engine is live and running on real BSC data.
+        </p>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 bg-black text-white rounded-full pl-2 pr-5 py-2.5 font-bold text-sm border-2 border-black relative z-10 hover:-translate-y-0.5 transition-transform"
+        >
+          <span className="w-7 h-7 rounded-full bg-[#D7FF3D] flex items-center justify-center">
+            <ArrowRight size={14} strokeWidth={2.5} className="text-black" />
+          </span>
+          Get Started
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------
+   Footer — structure only, details intentionally placeholder
+--------------------------------------------------------- */
+function Footer() {
+  const cols = [
+    { title: "Product", links: ["Dashboard", "New complaint", "Case registry", "Wallet scanner"] },
+    { title: "Research", links: ["How it works", "Methodology", "Data sources"] },
+    { title: "Team", links: ["About", "Contact"] },
+  ];
+
+  return (
+    <footer className="bg-[#0B0C0F] text-white px-6 pt-20 pb-10">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between gap-10 mb-16">
           <div>
-            <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">
-              End-to-End Blockchain Intelligence
-            </h2>
-            <p className="text-slate-400 text-sm mt-1">
-              Smarter risk decisions delivered with instant transitive execution.
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-full bg-[#D7FF3D] flex items-center justify-center">
+                <span className="text-black font-display font-bold text-xs">Dt</span>
+              </div>
+              <span className="font-display font-bold text-lg">DhanTrace</span>
+            </div>
+            <p className="text-sm text-white/45 max-w-xs leading-relaxed">
+              Automated blockchain fraud investigation, built for SIH 2026. Details on this page
+              are placeholders pending final submission.
             </p>
+            <div className="flex items-center gap-3 mt-6">
+              <a href="#" className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:border-[#D7FF3D] hover:text-[#D7FF3D] transition-colors">
+                <Globe size={14} />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:border-[#D7FF3D] hover:text-[#D7FF3D] transition-colors">
+                <MessageCircle size={14} />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:border-[#D7FF3D] hover:text-[#D7FF3D] transition-colors">
+                <Mail size={14} />
+              </a>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="p-6 rounded-2xl bg-[#0E131F] border-2 border-slate-800 hover:border-lime-400 hover:bg-slate-900 transition-all duration-300 group flex flex-col justify-between h-64 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.4)]">
-              <div>
-                <Search className="w-8 h-8 text-slate-400 group-hover:text-lime-400 transition-colors mb-4" />
-                <h3 className="text-xl font-extrabold text-white group-hover:text-lime-400 transition-colors">
-                  See further
-                </h3>
-                <p className="text-slate-400 text-xs mt-2 leading-relaxed">
-                  Screen unmapped wallet clusters across 30+ blockchains with real-time graph routing.
-                </p>
-              </div>
-              <div className="text-xs font-mono text-slate-500 group-hover:text-slate-300 transition-colors">
-                MODULE // 01
-              </div>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#0E131F] border-2 border-slate-800 hover:border-lime-400 hover:bg-slate-900 transition-all duration-300 group flex flex-col justify-between h-64 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.4)]">
-              <div>
-                <Zap className="w-8 h-8 text-slate-400 group-hover:text-lime-400 transition-colors mb-4" />
-                <h3 className="text-xl font-extrabold text-white group-hover:text-lime-400 transition-colors">
-                  Act faster
-                </h3>
-                <p className="text-slate-400 text-xs mt-2 leading-relaxed">
-                  Agentic AI triages high-risk financial laundering events in milliseconds.
-                </p>
-              </div>
-              <div className="text-xs font-mono text-slate-500 group-hover:text-slate-300 transition-colors">
-                MODULE // 02
-              </div>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#0E131F] border-2 border-slate-800 hover:border-lime-400 hover:bg-slate-900 transition-all duration-300 group flex flex-col justify-between h-64 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.4)]">
-              <div>
-                <Lock className="w-8 h-8 text-slate-400 group-hover:text-lime-400 transition-colors mb-4" />
-                <h3 className="text-xl font-extrabold text-white group-hover:text-lime-400 transition-colors">
-                  Move confidently
-                </h3>
-                <p className="text-slate-400 text-xs mt-2 leading-relaxed">
-                  Defensible audit trails engineered explicitly for law enforcement standards.
-                </p>
-              </div>
-              <div className="text-xs font-mono text-slate-500 group-hover:text-slate-300 transition-colors">
-                MODULE // 03
-              </div>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-lime-400 text-black border-2 border-black flex flex-col justify-between h-64 shadow-[5px_5px_0px_0px_#000]">
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 bg-black text-lime-400 rounded">
-                  Solutions For
-                </span>
-                <ul className="mt-4 space-y-2 text-xs font-bold uppercase tracking-wider">
-                  <li className="flex items-center gap-2"><ArrowRight size={12} /> Financial Institutions</li>
-                  <li className="flex items-center gap-2"><ArrowRight size={12} /> Law Enforcement</li>
-                  <li className="flex items-center gap-2"><ArrowRight size={12} /> Regulators &amp; FIUs</li>
-                  <li className="flex items-center gap-2"><ArrowRight size={12} /> Crypto Exchanges</li>
+          <div className="grid grid-cols-3 gap-10">
+            {cols.map((c) => (
+              <div key={c.title}>
+                <div className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">{c.title}</div>
+                <ul className="space-y-2.5">
+                  {c.links.map((l) => (
+                    <li key={l}>
+                      <a href="#" className="text-sm text-white/65 hover:text-[#D7FF3D] transition-colors">
+                        {l}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
-              <div className="text-xs font-mono font-black">SYSTEM READY // 2026</div>
-            </div>
-          </div>
-        </section>
-
-        {/* ACCORDION TOGGLE SECTION & TERMINAL */}
-        <section className="rounded-3xl bg-[#0B0F19] border-2 border-slate-800 p-8 md:p-10 shadow-[6px_6px_0px_0px_rgba(15,23,42,0.8)]">
-          <div className="mb-8">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-              Every transaction, fully understood
-            </h2>
-            <p className="text-slate-400 text-sm mt-2">
-              From compliance to complex investigations, turn complexity into actionable clarity.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 space-y-4">
-              {[
-                {
-                  title: "Crypto compliance & screening",
-                  desc: "Automated real-time wallet address screening against global sanction lists, illicit attribution databases, and OFAC registries.",
-                  icon: ShieldAlert,
-                },
-                {
-                  title: "Stablecoin risk management",
-                  desc: "Track velocity and concentration risks across fiat-backed stablecoins across multi-chain bridges and decentralised liquidity pools.",
-                  icon: TrendingUp,
-                },
-                {
-                  title: "Forensic investigations & asset tracing",
-                  desc: "Visualise complex multi-hop transaction graphs and trace stolen digital assets directly to cash-out off-ramps.",
-                  icon: Activity,
-                },
-              ].map((item, index) => {
-                const Icon = item.icon;
-                const isOpen = activeAccordion === index;
-                return (
-                  <div
-                    key={index}
-                    onClick={() => toggleAccordion(index)}
-                    className={`cursor-pointer rounded-2xl border-2 transition-all duration-300 p-5 ${
-                      isOpen
-                        ? "bg-slate-900 border-lime-400 shadow-[4px_4px_0px_0px_#a3e635]"
-                        : "bg-[#0E131F] border-slate-800 hover:border-slate-700"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-xl ${isOpen ? "bg-lime-400 text-black" : "bg-slate-800 text-slate-300"}`}>
-                          <Icon size={20} />
-                        </div>
-                        <h3 className="text-lg font-bold text-white">{item.title}</h3>
-                      </div>
-                      {isOpen ? <ChevronUp size={20} className="text-lime-400" /> : <ChevronDown size={20} className="text-slate-500" />}
-                    </div>
-
-                    {isOpen && (
-                      <p className="mt-4 text-xs md:text-sm text-slate-300 leading-relaxed pl-12 border-l-2 border-lime-400/40">
-                        {item.desc}
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="lg:col-span-5 rounded-2xl bg-black border-2 border-slate-800 p-6 flex flex-col justify-between min-h-[320px] shadow-inner relative overflow-hidden">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-500 border-b border-slate-800 pb-3">
-                  <span className="flex items-center gap-2"><Terminal size={14} className="text-lime-400" /> INTELLIGENCE_FEED.LOG</span>
-                  <span className="text-lime-400 animate-pulse">● LIVE</span>
-                </div>
-
-                <div className="space-y-2 font-mono text-xs text-slate-300">
-                  <p className="text-slate-500">&gt; Initializing graph query...</p>
-                  <p className="text-emerald-400">&gt; Target: 0x71C...39A1 [FLAGGED_HIGH_RISK]</p>
-                  <p className="text-slate-400">&gt; Risk Score: 88/100 (Money Laundering Cluster)</p>
-                  <p className="text-slate-400">&gt; Associated Entity: Unlicensed OTC Swap Desk</p>
-                  <p className="text-lime-400">&gt; Recommendation: Immediate Freeze Directive</p>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-slate-500">Node ID: SC-IND-8829</span>
-                <span className="px-2 py-1 rounded bg-lime-400/10 text-lime-400 font-mono text-[10px] border border-lime-400/20">
-                  CONFIDENCE: 99.4%
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* RESEARCH DOCUMENTATION & INDIA VULNERABILITY REPORT */}
-        <section id="research" className="rounded-3xl bg-gradient-to-b from-[#0E1320] to-[#080B12] border-2 border-lime-400/40 p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(163,230,53,0.1)] space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-800 pb-8">
-            <div>
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-mono font-bold uppercase mb-3">
-                National Security &amp; Forensic Brief
-              </div>
-              <h2 className="text-2xl md:text-4xl font-extrabold text-white tracking-tight">
-                India Financial Cyber Crime Vulnerability Index
-              </h2>
-            </div>
-            <div className="shrink-0 text-right">
-              <span className="text-xs font-mono text-slate-400 block">DOCUMENT REF: SC-IND-2026</span>
-              <span className="text-xs font-mono text-lime-400 font-bold">STATUS: DECLASSIFIED</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-8 space-y-4 text-slate-300 text-sm leading-relaxed">
-              <p>
-                In recent years, India has suffered an unprecedented surge in sophisticated financial cybercrime operations. Unregulated peer-to-peer (P2P) crypto exchanges, mule bank account networks, and instant messaging scam syndicates have siphoned thousands of crores out of the domestic banking infrastructure into obfuscated on-chain ecosystems.
-              </p>
-              <p>
-                The primary vector involves illicit Telegram and WhatsApp investment syndicates luring victims into fake trading applications, immediately swapping seized INR funds into USDT, and bridging them across cross-chain liquidity protocol mixers to evade domestic law enforcement freezing orders.
-              </p>
-
-              <div className="p-5 rounded-2xl bg-black/60 border-2 border-slate-800 my-6 font-mono text-xs space-y-2">
-                <div className="text-lime-400 font-bold uppercase">Key On-Chain Metrics (India Sector):</div>
-                <div className="text-slate-400">• Over ₹7,800 Crore identified in illicit crypto outflows during recent cycles.</div>
-                <div className="text-slate-400">• 64% of cyber fraud funds converted to stablecoins within 15 minutes of bank compromise.</div>
-                <div className="text-slate-400">• High concentration of unhosted wallet addresses linked to offshore unregistered exchanges.</div>
-              </div>
-
-              <p>
-                Smart-chain-analyzer provides law enforcement agencies and compliance teams with real-time tracking, enabling immediate mapping of digital asset movements to facilitate prompt freeze requests and inter-agency intelligence coordination.
-              </p>
-            </div>
-
-            <div className="lg:col-span-4 space-y-4">
-              <div className="p-6 rounded-2xl bg-[#090C14] border-2 border-slate-800 space-y-4">
-                <h4 className="font-extrabold text-white text-base">Key National Intelligence Indicators</h4>
-                <div className="space-y-3">
-                  <div>
-                    <div className="text-xs text-slate-400">P2P Scam Exploitation</div>
-                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden mt-1"><div className="bg-rose-500 h-full w-[82%]" /></div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-400">Cross-Border Capital Flight</div>
-                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden mt-1"><div className="bg-amber-400 h-full w-[68%]" /></div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-400">Recovery Rate (With Intelligence)</div>
-                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden mt-1"><div className="bg-lime-400 h-full w-[91%]" /></div>
-                  </div>
-                </div>
-
-                <Link
-                  href="/dashboard"
-                  className="w-full mt-4 py-3 rounded-xl bg-lime-400 text-black font-extrabold text-xs uppercase tracking-wider border-2 border-black flex items-center justify-center gap-2 hover:bg-lime-300 transition-all"
-                >
-                  Access Forensic Tools <ArrowRight size={14} />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      {/* FOOTER */}
-      <footer className="pt-8 border-t-2 border-slate-800/80 max-w-6xl w-full mx-auto px-4 pb-12">
-        <div className="rounded-2xl bg-[#0B0F19] border-2 border-slate-800 p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded bg-lime-400 flex items-center justify-center font-black text-black text-xs border border-black">
-              SC
-            </div>
-            <span className="font-extrabold text-sm text-white uppercase tracking-wider">
-              Smart-chain-analyzer
-            </span>
-          </div>
-
-          <div className="flex items-center gap-6 text-xs text-slate-500 font-mono">
-            <span>[PRIVACY POLICY]</span>
-            <span>[TERMS OF SERVICE]</span>
-            <span>[API STATUS: ONLINE]</span>
-          </div>
-
-          <div className="text-xs text-slate-500 font-mono">
-            © 2026 Smart-chain-analyzer. All rights reserved.
+            ))}
           </div>
         </div>
-      </footer>
+
+        <div className="border-t border-white/10 pt-6 text-xs text-white/35">
+          Prototype built for Smart India Hackathon 2026 — not a certified or deployed government system.
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ---------------------------------------------------------
+   Page
+--------------------------------------------------------- */
+export default function LandingPage() {
+  return (
+    <div className="font-sans">
+      <FloatingNav />
+      <Hero />
+      <ResearchSection />
+      <HowItWorks />
+      <FeatureToggles />
+      <CTABanner />
+      <Footer />
     </div>
   );
 }
