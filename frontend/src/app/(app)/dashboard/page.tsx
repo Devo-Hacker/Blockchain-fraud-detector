@@ -1,5 +1,6 @@
 import { getCasesWithRisk, shortAddr } from "@/lib/api";
 import Link from "next/link";
+import ProfileHeader from "@/components/ProfileHeader";
 
 export default async function Dashboard() {
   let cases: Awaited<ReturnType<typeof getCasesWithRisk>> = [];
@@ -17,6 +18,8 @@ export default async function Dashboard() {
 
   return (
     <div>
+      <ProfileHeader />
+
       <div className="mb-7">
         <h2 className="text-2xl font-extrabold mb-1.5 tracking-tight">Investigation overview</h2>
         <p className="text-inkSoft text-sm max-w-lg">
