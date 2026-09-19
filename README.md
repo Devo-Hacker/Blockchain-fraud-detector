@@ -22,6 +22,21 @@ The goal isn't to replace tools like Chainalysis — it's to automate the specif
 
 ---
 
+## Preview
+
+<img width="1897" height="907" alt="Screenshot 2026-09-19 231430" src="https://github.com/user-attachments/assets/813a2f94-81cb-498a-a90d-12d9a27e9b98" />
+
+<img width="1900" height="910" alt="Screenshot 2026-09-19 231446" src="https://github.com/user-attachments/assets/76fea031-47f1-4bb4-b6cd-2cfb6ceecbac" />
+
+<img width="1900" height="912" alt="Screenshot 2026-09-19 231500" src="https://github.com/user-attachments/assets/bbad3d12-c954-4716-8296-79bb9224f2c1" />
+
+<img width="1897" height="907" alt="Screenshot 2026-09-19 231518" src="https://github.com/user-attachments/assets/e3b0f1ba-200c-4845-8b28-42bd09a85512" />
+
+<img width="1896" height="907" alt="Screenshot 2026-09-19 231530" src="https://github.com/user-attachments/assets/a9bc2b2b-f4c3-41a1-a2bd-33c055d29926" />
+
+<img width="1901" height="908" alt="image" src="https://github.com/user-attachments/assets/b58f6599-5958-455d-b86b-8a24bebdd0a9" />
+
+
 ## Architecture
 
 ```
